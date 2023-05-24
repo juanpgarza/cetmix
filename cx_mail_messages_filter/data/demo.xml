@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <!--    Filter #1    -->
+    <record id="cx_message_filter_test_001" model="cx.message.filter">
+        <field name="name">Filter 1</field>
+        <field name="active">1</field>
+        <field name="action">m</field>
+        <field name="destination_model_id" ref="base.model_res_partner" />
+    </record>
+    <record
+        id="cx_message_filter_rule_001_for_filter_test_001"
+        model="cx.message.filter.rule"
+    >
+        <field name="filter_id" ref="cx_message_filter_test_001" />
+    </record>
+    <record
+        id="cx_message_filter_condition_for_rule_001_001"
+        model="cx.message.filter.condition"
+    >
+        <field name="rule_id" ref="cx_message_filter_rule_001_for_filter_test_001" />
+        <field name="trigger">to</field>
+        <field name="condition">like</field>
+        <field name="value">@example.com</field>
+    </record>
+    <!--   Filter #2     -->
+    <record id="cx_message_filter_test_002" model="cx.message.filter">
+        <field name="name">Filter 2</field>
+        <field name="active">1</field>
+        <field name="action">k</field>
+    </record>
+    <record
+        id="cx_message_filter_rule_001_for_filter_test_002"
+        model="cx.message.filter.rule"
+    >
+        <field name="filter_id" ref="cx_message_filter_test_002" />
+    </record>
+    <record
+        id="cx_message_filter_condition_for_rule_002_001"
+        model="cx.message.filter.condition"
+    >
+        <field name="rule_id" ref="cx_message_filter_rule_001_for_filter_test_002" />
+        <field name="trigger">recipients</field>
+        <field name="condition">not_like</field>
+        <field name="partner_ids" eval="[(4, ref('base.res_partner_address_31'))]" />
+    </record>
+    <record
+        id="cx_message_filter_condition_for_rule_002_002"
+        model="cx.message.filter.condition"
+    >
+        <field name="rule_id" ref="cx_message_filter_rule_001_for_filter_test_002" />
+        <field name="trigger">recipients</field>
+        <field name="condition">not_like</field>
+        <field name="partner_ids" eval="[(4, ref('base.res_partner_address_24'))]" />
+    </record>
+    <record
+        id="cx_message_filter_rule_002_for_filter_test_002"
+        model="cx.message.filter.rule"
+    >
+        <field name="filter_id" ref="cx_message_filter_test_002" />
+    </record>
+    <record
+        id="cx_message_filter_condition_for_rule_002_003"
+        model="cx.message.filter.condition"
+    >
+        <field name="rule_id" ref="cx_message_filter_rule_002_for_filter_test_002" />
+        <field name="trigger">body</field>
+        <field name="condition">like</field>
+        <field name="value">Deco</field>
+    </record>
+    <!--   Filter #3     -->
+    <record id="cx_message_filter_test_003" model="cx.message.filter">
+        <field name="name">Filter 3</field>
+        <field name="active">1</field>
+        <field name="action">r</field>
+        <field name="destination_rec" ref="base.res_partner_address_4" />
+    </record>
+    <record
+        id="cx_message_filter_rule_001_for_filter_test_003"
+        model="cx.message.filter.rule"
+    >
+        <field name="filter_id" ref="cx_message_filter_test_003" />
+    </record>
+    <record
+        id="cx_message_filter_condition_for_rule_003_001"
+        model="cx.message.filter.condition"
+    >
+        <field name="rule_id" ref="cx_message_filter_rule_001_for_filter_test_003" />
+        <field name="trigger">body</field>
+        <field name="condition">like</field>
+        <field name="value">Michel</field>
+    </record>
+</odoo>

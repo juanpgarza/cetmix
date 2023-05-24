@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="ir_corn_cx_mail_messages_filter_unlink_spam" model="ir.cron">
+        <field name="name">Message Filter: unlink spam</field>
+        <field name="user_id" ref="base.user_root" />
+        <field name="model_id" ref="model_mail_message" />
+        <field name="state">code</field>
+        <field name="code">model._delete_spam()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field
+            name="nextcall"
+            eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"
+        />
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False" />
+        <field name="active" eval="True" />
+    </record>
+</odoo>

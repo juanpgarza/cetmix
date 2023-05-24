@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cx_message_filter,access.cx.message.filter.group_user,model_cx_message_filter,base.group_user,1,0,0,0
+access_cx_message_filter_system,access.cx.message.filter.system.settings,model_cx_message_filter,base.group_system,1,1,1,1
+access_cx_message_filter_condition,access.cx.message.filter.condition.group_user,model_cx_message_filter_condition,base.group_user,1,0,0,0
+access_cx_message_filter_condition_system,access.cx.message.filter.condition.system.settings,model_cx_message_filter_condition,base.group_system,1,1,1,1
+access_cx_message_filter_rule,access.cx.message.filter.rule.group_user,model_cx_message_filter_rule,base.group_user,1,0,0,0
+access_cx_message_filter_rule_SYSTEM,access.cx.message.filter.rule.system.settings,model_cx_message_filter_rule,base.group_system,1,1,1,1

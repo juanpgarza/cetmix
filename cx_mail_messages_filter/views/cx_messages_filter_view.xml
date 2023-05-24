@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ 
+    Copyright (C) Cetmix OÜ
+
+   Odoo Proprietary License v1.0
+ 
+   This software and associated files (the "Software") may only be used (executed,
+   modified, executed after modifications) if you have purchased a valid license
+   from the authors, typically via Odoo Apps, or if you have received a written
+   agreement from the authors of the Software (see the COPYRIGHT file).
+ 
+   You may develop Odoo modules that use the Software as a library (typically
+   by depending on it, importing it and using its resources), but without copying
+   any source code or material from the Software. You may distribute those
+   modules under the license of your choice, provided that this license is
+   compatible with the terms of the Odoo Proprietary License (For example:
+   LGPL, MIT, or proprietary licenses similar to this one).
+ 
+   It is forbidden to publish, distribute, sublicense, or sell copies of the Software
+   or modified copies of the Software.
+ 
+   The above copyright notice and this permission notice must be included in all
+   copies or substantial portions of the Software.
+ 
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+-->
+<odoo>
+    <record id="cx_filter_messages" model="ir.ui.view">
+        <field name="name">cx.filter.messages</field>
+        <field name="model">mail.message</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="email_from" />
+                <field name="author_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="cx_message_filter_view_tree" model="ir.ui.view">
+        <field name="name">cx.message.filter.tree</field>
+        <field name="model">cx.message.filter</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="order" widget="handle" />
+                <field name="name" />
+                <field name="action" />
+                <field name="message_count" />
+                <field name="active" widget="boolean_toggle" />
+            </tree>
+        </field>
+    </record>
+    <record id="cx_message_filter_view_form" model="ir.ui.view">
+        <field name="name">cx.message.filter.form</field>
+        <field name="model">cx.message.filter</field>
+        <field name="arch" type="xml">
+            <form string="Mail Message Filter">
+                <sheet>
+                    <div class="oe_button_box" name="button_message_filter">
+                        <button
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-envelope"
+                            name="action_filter_message"
+                            attrs="{'invisible': [('message_count', '=', 0)]}"
+                        >
+                            <field name="message_count" widget="statinfo" />
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name" />
+                    </group>
+                    <notebook>
+                        <page string="Conditions">
+                            <field name="rule_ids">
+                                <tree>
+                                    <field name="name" />
+                                </tree>
+                            </field>
+                            <group name="help_conditions" string="Search conditions">
+                                <p colspan="2">
+                                    Conditions inside a filter are joined using '
+                                    <b>OR</b>
+                                    ' (e.g '
+                                    <b>
+                                        Condition #1 OR
+                                    Condition #2 .. OR Condition X
+                                    </b>
+                                    ')
+                                </p>
+                                <p colspan="2">
+                                    Expressions within a filter condition are joined
+                                    using '
+                                    <b>AND</b>
+                                    ' (e.g '
+                                    <b>
+                                        Expression #1 AND Expression #2 .. AND
+                                        Expression X
+                                    </b>
+                                    ')
+                                </p>
+                            </group>
+                        </page>
+                        <page string="Actions" name="actions_page">
+                            <group>
+                                <field name="action" />
+                                <field
+                                    name="destination_model_id"
+                                    attrs="{'invisible': [('action', '!=', 'm'), ('action', '!=', 's')],
+                                            'required': [('action', 'in', ['m', 's'])]}"
+                                />
+                                <field
+                                    name="destination_rec"
+                                    attrs="{'invisible': [('action', '!=', 'r')],
+                                            'required': [('action', '=', 'r')]}"
+                                />
+                            </group>
+                            <group id="custom_values_filter">
+                                <field
+                                    name="custom_values"
+                                    placeholder="{} a dictionary with custom values. Same syntax as in Mail Alias."
+                                />
+                            </group>
+                            <gorup
+                                attrs="{'invisible': [('action', 'not in', ['s', 'p'])]}"
+                            >
+                                <div
+                                    name="pro"
+                                    colspan="2"
+                                    class="oe_form_box_info oe_text_center"
+                                >
+                                    <p>
+                                        Please purchase
+                                        <a
+                                            target="_blank"
+                                            href="https://apps.odoo.com/apps/modules/15.0/cx_mail_message_filter_pro"
+                                        >
+                                            Pro Version
+                                        </a>
+                                        to use this feature
+                                    </p>
+                                </div>
+                            </gorup>
+                            <!-- === HELP === -->
+                            <group
+                                string="Keep here"
+                                attrs="{'invisible': [('action', '!=', 'k')]}"
+                                name="keep_here"
+                            >
+                                <b colspan="2">
+                                    Messages will be posted to this filter.
+                                </b>
+                                <h3>
+                                    You can use
+                                    <a
+                                        target="_blank"
+                                        href="https://apps.odoo.com/apps/modules/15.0/prt_mail_messages_pro"
+                                    >
+                                        Messages Easy Pro
+                                    </a>
+                                    app to move message to any other record later.
+                                </h3>
+                            </group>
+                            <group
+                                string="Do not receive"
+                                attrs="{'invisible': [('action', '!=', 'n')]}"
+                                name="do_not_receive"
+                            >
+                                <b colspan="2">Message will be simply ignored</b>
+                            </group>
+                            <group
+                                string="Post to model"
+                                attrs="{'invisible': [('action', '!=', 'm')]}"
+                                name="post_to_model"
+                            >
+                                <h5>
+                                    Message will be posted to the selected model (e.g. '
+                                    <b>CRM Lead</b>
+                                    ' or '
+                                    <b>
+                                        Project
+                                    Task
+                                    </b>
+                                    ').
+                                </h5>
+                                <p colspan="2">
+                                    <b>
+                                        Important notice:
+                                        <i>
+                                            destination model must support this option.
+                                            For this '
+                                    message_new()' function must be implemented.
+                                        </i>
+                                    </b>
+                                </p>
+                            </group>
+                            <group
+                                string="Post to record"
+                                attrs="{'invisible': [('action', '!=', 'r')]}"
+                                name="post_to_record"
+                            >
+                                <h5>Message will be posted to the selected record.</h5>
+                                <p colspan="2">
+                                    <b>
+                                        Important notice:
+                                        <i>
+                                            destination model must support this option
+                                            (have a chatter)
+                                        </i>
+                                    </b>
+                                </p>
+                            </group>
+                            <group
+                                string="Search for record using patterns"
+                                attrs="{'invisible': [('action', '!=', 's')]}"
+                                name="search_for_record"
+                            >
+                                <p colspan="2">
+                                    <b>
+                                        Patterns will extract a sting that will be used
+                                        for searching records.
+                                        <br />
+                                        Multiple patterns can be combined in a single
+                                        template
+                                    </b>
+                                </p>
+                                <h5 colspan="2">Following patterns are awvilable:</h5>
+                                <ol colspan="2">
+                                    <li>
+                                        <p>
+                                            <b>
+                                                '%' - matches any symbols, returns the
+                                                whole string.
+                                            </b>
+                                            <br />
+                                            <i>
+                                                Example: 'INV%' will return
+                                                'INV/2021/10/3 dated 03/10/2021'
+                                            </i>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <b>
+                                                '%w' - matches any symbols, returns the
+                                                word found in only.
+                                            </b>
+                                            <br />
+                                            <i>
+                                                Example: 'INV%w' will return
+                                                'INV/2021/10/3'
+                                            </i>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <b>
+                                                '%d' - matches digits only, returns the
+                                                word found in only.
+                                            </b>
+                                            <br />
+                                            <i>
+                                                Example INV/%d/%d/%d will match
+                                                'INV/2021/10/3' but will NOT match
+                                                'INV/2021/OUT/3'
+                                            </i>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <b>
+                                                '%(integer number) - matches exact
+                                                number of symbols only, returns the word
+                                                found in only.
+                                            </b>
+                                            <br />
+                                            <i>
+                                                Example 'INV/%3/%d/%d' will match
+                                                'INV/OUT/10/3' but will not match will
+                                                match 'INV/IN/10/3'
+                                            </i>
+                                        </p>
+                                    </li>
+                                </ol>
+                            </group>
+                            <group
+                                string="Post to partner"
+                                attrs="{'invisible': [('action', '!=', 'p')]}"
+                                name="post_to_partner"
+                            >
+                                <p colspan="2">
+                                    <b>
+                                        Message will be posted to a sender's partner
+                                        record.
+                                    </b>
+                                </p>
+                                <p colspan="2">
+                                    <i>
+                                        <b>Exmaple:</b>
+                                        message from '
+                                        <b>Michael Fletcher</b>
+                                        ' will be posted to the '
+                                        <b>Michael Fletcher</b>
+                                        '
+                                    partner record and will be visible in the chatter.
+                                    </i>
+                                </p>
+                            </group>
+                            <group
+                                string="Mark spam"
+                                attrs="{'invisible': [('action', '!=', 'x')]}"
+                                name="mark_spam"
+                            >
+                                <p
+                                    colspan="2"
+                                    string="Message will be makerd as 'spam'. It can be accessed under 'Messages/Spam' menu"
+                                />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="cx_message_filter_rule_view_form" model="ir.ui.view">
+        <field name="name">cx.message.filter.rule.form</field>
+        <field name="model">cx.message.filter.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="condition_ids">
+                        <tree>
+                            <field name="name" />
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="cx_message_filter_conditions_view_form" model="ir.ui.view">
+        <field name="name">cx.message.filter.condition.form</field>
+        <field name="model">cx.message.filter.condition</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="o_row">
+                        <label for="trigger" string="If" style="margin-right: 1rem;" />
+                        <field name="trigger" nolabel="1" />
+                        <field name="condition" nolabel="1" />
+                        <field
+                            name="partner_ids"
+                            nolabel="1"
+                            widget="many2many_tags"
+                            attrs="{'invisible': ['|',
+                                ('trigger', 'not in', ('author', 'recipients')),
+                                ('condition', 'in', ('is', 'not')),
+                            ]}"
+                        />
+                        <field
+                            name="value"
+                            nolabel="1"
+                            attrs="{'invisible': [('trigger', 'not in', ('from', 'to', 'subject', 'body'))]}"
+                        />
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
